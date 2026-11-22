@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UMAR APP 3.0</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:25px 18px;
+ background:#070b16;color:white;
+ font-family:Arial;text-align:center
+}
+.container{max-width:450px;margin:auto}
+h1{color:#38a5ff;letter-spacing:3px}
+.card{
+ background:#111b2e;padding:25px;
+ border:1px solid #23446b;
+ border-radius:22px;margin-top:20px
+}
+#clock{font-size:43px;font-weight:bold;margin:15px 0}
+#date{color:#a9b8ca}
+#weather{font-size:27px;margin:15px}
+.small{color:#9fb3cc}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>⚡ UMAR APP 3.0</h1>
+
+<div class="card">
+<h2>Привет, Умар!</h2>
+<p class="small">Твой личный помощник</p>
+<div id="clock">00:00:00</div>
+<div id="date"></div>
+</div>
+
+<div class="card">
+<h2>🌤 Погода в Зомине</h2>
+<div id="weather">Загрузка...</div>
+<div id="details"></div>
+</div>
+</div>
+
+<script>
+function updateClock(){
+ const n=new Date();
+ document.getElementById("clock").textContent=
+ n.toLocaleTimeString("ru-RU");
+ document.getElementById("date").textContent=
+ n.toLocaleDateString("ru-RU",{
+ weekday:"long",day:"numeric",
+ month:"long",year:"numeric"
+ });
+}
+setInterval(updateClock,1000);
+updateClock();
+
+function speak(text){
+ if(!("speechSynthesis" in window)) return;
+ speechSynthesis.cancel();
+ const msg=new SpeechSynthesisUtterance(text);
+ msg.lang="ru-RU";
+ msg.rate=0.9;
+ msg.pitch=1;
+ const voices=speechSynthesis.getVoices();
+ const voice=voices.find(v=>v.lang.toLowerCase().startsWith("ru"));
+ if(voice) msg.voice=voice;
+ speechSynthesis.speak(msg);
+}
+
+async function getWeather(){
+ try{
+ const url="https://api.open-meteo.com/v1/forecast?latitude=39.7000&longitude=68.4000&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=Asia%2FTashkent";
+ const r=await fetch(url);
+ const d=await r.json();
+ const c=d.current;
+ const names={
+ 0:"Ясно",1:"Преимущественно ясно",
+ 2:"Переменная облачность",3:"Облачно",
+ 45:"Туман",48:"Туман",
+ 51:"Морось",61:"Дождь",63:"Дождь",
+ 65:"Сильный дождь",71:"Снег",
+ 80:"Ливень",95:"Гроза"
+ };
+ const condition=names[c.weather_code]||"Погодные условия";
+ document.getElementById("weather").textContent=
+ condition+" · "+c.temperature_2m+"°C";
+ document.getElementById("details").textContent=
+ "Влажность: "+c.relative_humidity_2m+
+ "% | Ветер: "+c.wind_speed_10m+" км/ч";
+
+ window.weatherMessage=
+ "Сейчас в Зомине "+condition+
+ ". Температура "+c.temperature_2m+
+ " градусов. Влажность "+
+ c.relative_humidity_2m+" процентов.";
+ }catch(e){
+ document.getElementById("weather").textContent=
+ "Нет подключения к интернету";
+ }
+}
+
+async function startApp(){
+ await getWeather();
+ const n=new Date();
+ const time=n.toLocaleTimeString("ru-RU",{
+ hour:"2-digit",minute:"2-digit"
+ });
+ const message="Привет, Умар! Добро пожаловать. "+
+ "Сейчас "+time+". "+(window.weatherMessage||"");
+ speak(message);
+}
+
+window.addEventListener("load",()=>{
+ setTimeout(startApp,1200);
+});
+</script>
+</body>
+</html/›+0
+
