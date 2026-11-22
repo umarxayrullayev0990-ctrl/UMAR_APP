@@ -13,9 +13,13 @@
   "dependencies": {
     "@capacitor/android": "^8.6.2",
     "@capacitor/cli": "^8.6.2",
-    "@capacitor/core": "^8.6.2"
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/local-notifications": "^8.3.1",
+    "@capacitor/preferences": "^8.0.1",
+    "@capgo/capacitor-flash": "^8.0.54"
   },
   "devDependencies": {
+    "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
   }
 }
