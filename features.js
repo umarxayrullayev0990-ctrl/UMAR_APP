@@ -29,7 +29,7 @@ panel.innerHTML = `
 <hr>
 <h3>Ovoz sozlamalari</h3>
 <button id="voiceBtn">OVOZNI SINASH</button>
-<div class="artel">ARTEL</div>
+<div style="background:#080B0D;color:#39D353;text-align:center;padding:18px;border-radius:12px;margin-top:18px;font-size:32px;font-weight:bold;line-height:1.1">U<br>M<br><small style="font-size:13px">UMAR APP</small></div><div class="artel">ARTEL</div>
 `;
 document.body.appendChild(panel);
 
