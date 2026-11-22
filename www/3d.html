@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UMAR 3D</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% 40%,#17254b,#03050d 75%);color:white;font-family:Arial;text-align:center;min-height:100vh}
+h1{color:#00eaff;text-shadow:0 0 18px #00eaff;margin:25px}
+.tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+button{background:#101b32;color:#00eaff;border:1px solid #00cfff;padding:12px 16px;border-radius:12px;font-weight:bold}
+button:active{background:#07536b}
+.stage{height:390px;display:flex;align-items:center;justify-content:center;perspective:900px;overflow:hidden}
+.object{width:220px;height:220px;position:relative;transform-style:preserve-3d;animation:float 4s ease-in-out infinite;filter:drop-shadow(0 0 25px #00cfff)}
+@keyframes float{50%{translate:0 -15px}}
+.globe{border-radius:50%;background:radial-gradient(circle at 30% 25%,#a4ffff,#0879c8 35%,#04133b 75%);box-shadow:inset -22px -12px 35px #000,0 0 35px #00d9ff;overflow:hidden}
+.globe:before{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-linear-gradient(0deg,transparent 0 28px,#8af7ff55 29px 31px),repeating-linear-gradient(90deg,transparent 0 28px,#8af7ff44 29px 31px);transform:rotate(-20deg)}
+.globe:after{content:"";position:absolute;inset:15% 25%;background:#48d88b;clip-path:polygon(20% 0,75% 8%,100% 35%,70% 50%,85% 80%,50% 100%,30% 65%,0 40%);filter:drop-shadow(0 0 5px #8affb2)}
+.skull{font-size:175px;display:flex;align-items:center;justify-content:center;text-shadow:0 0 15px #00eaff,0 0 35px #008cff}
+.robot{border-radius:35px;background:linear-gradient(135deg,#d8eaff,#506b8d 35%,#111d35 75%);box-shadow:inset 0 0 25px #00dfff,0 0 35px #00bfff}
+.robot:before{content:"";position:absolute;left:35px;right:35px;top:65px;height:55px;border-radius:15px;background:#071321;border:3px solid #00dfff;box-shadow:0 0 18px #00dfff}
+.robot:after{content:"";position:absolute;left:65px;right:65px;bottom:40px;height:22px;border-radius:5px;background:#00eaff;box-shadow:0 0 15px #00eaff}
+.eye{position:absolute;z-index:2;top:82px;width:18px;height:18px;border-radius:50%;background:#00faff;box-shadow:0 0 15px #00faff}
+.eye.left{left:65px}.eye.right{right:65px}
+.caption{color:#9ceeff;font-size:19px}
+.info{color:#9aaac7;font-size:13px;margin:20px}
+</style>
+</head>
+<body>
+<h1>UMAR 3D GYROSCOPE</h1>
+<div class="tabs">
+<button onclick="show('skull')">CYBER SKULL</button>
+<button onclick="show('globe')">GLOBE</button>
+<button onclick="show('robot')">ROBOT HEAD</button>
+</div>
+<div class="stage" id="stage">
+<div class="object skull" id="obj">💀</div>
+</div>
+<div class="caption" id="caption">CYBER SKULL</div>
+<p class="info">Barmoq bilan aylantiring yoki telefonni qimirlatib ko‘ring</p>
+<button onclick="gyro()">GYROSCOPE ON</button>
+<script>
+let obj=document.getElementById('obj'),kind='skull',rx=0,ry=0,lastX=0,lastY=0,drag=false;
+function show(k){
+kind=k;obj.className='object '+k;obj.innerHTML=k==='skull'?'💀':k==='robot'?'<i class="eye left"></i><i class="eye right"></i>':'';
+document.getElementById('caption').textContent=k==='skull'?'CYBER SKULL':k==='globe'?'3D GLOBE':'ROBOT HEAD';
+obj.style.transform='rotateX(0deg) rotateY(0deg)';
+}
+obj.addEventListener('touchstart',e=>{drag=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY});
+obj.addEventListener('touchmove',e=>{if(!drag)return;let t=e.touches[0];ry+=(t.clientX-lastX)*0.8;rx-=(t.clientY-lastY)*0.8;lastX=t.clientX;lastY=t.clientY;obj.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`});
+obj.addEventListener('touchend',()=>drag=false);
+obj.addEventListener('mousedown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY});
+window.addEventListener('mousemove',e=>{if(!drag)return;ry+=(e.clientX-lastX)*0.8;rx-=(e.clientY-lastY)*0.8;lastX=e.clientX;lastY=e.clientY;obj.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`});
+window.addEventListener('mouseup',()=>drag=false);
+function gyro(){
+if(!('DeviceOrientationEvent'in window)){alert('Giroskop mavjud emas');return}
+window.addEventListener('deviceorientation',e=>{if(e.beta===null)return;obj.style.transform=`rotateX(${e.beta}deg) rotateY(${e.gamma}deg)`});
+alert('Giroskop yoqildi');
+}
+</script>
+</body>
+</html>
